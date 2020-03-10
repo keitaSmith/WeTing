@@ -35,6 +35,7 @@ const Input = props => {
     if (inputState.touched) {
       
       onInputChange(id, inputState.value, inputState.isValid);
+      //console.log(id);
     }
   }, [inputState, onInputChange, id]);
 
