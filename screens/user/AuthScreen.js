@@ -153,11 +153,14 @@ const AuthScreen = props => {
     setLoading(true);
     try {
       await disp(action);
+      setLoading(false);
+      props.navigation.navigate('ProductsOverview');
     } catch (err) {
       setError(err.message);
+      setLoading(false);
     }
 
-    setLoading(false);
+    
   };
 
 
@@ -266,7 +269,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   label: {
-    //fontFamily: 'open-sans-bold',
+    fontFamily: 'open-sans-bold',
     marginVertical: 8
   },
   input: {
@@ -279,16 +282,18 @@ const styles = StyleSheet.create({
     marginVertical: 5
   },
   errorText: {
-    //fontFamily: 'open-sans',
+    fontFamily: 'open-sans',
     color: 'red',
     fontSize: 13
   },
   formLabel: {
+    fontFamily:'open-sans-bold',
     fontSize: 16,
     color: Colors.primary,
     textAlign: "center"
   },
   toastStyle: {
+    fontFamily:'open-sans',
     backgroundColor: Colors.primary
   }
 });

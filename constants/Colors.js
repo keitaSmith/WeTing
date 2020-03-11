@@ -1,7 +1,7 @@
 export default {
-    primary: '#F46A4E',
-    accent:'#F3B05A',
-    
-    gradeB:'#A3586D',
-    gradeA:'#5C4A72'
+    primary: '#6181AB',
+    accent:'#61AB85',
+
+    gradeB:'#6181AB',
+    gradeA:'#61AB85'
 }
