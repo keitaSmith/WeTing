@@ -5,11 +5,15 @@ import { Provider } from 'react-redux';
 import {AppLoading} from 'expo';
 import * as Font from 'expo-font';
 import productsReducer from './store/reducers/products';
-import AuthScreen from './screens/user/AuthScreen';
+//import AuthScreen from './screens/user/AuthScreen';
 import ShopNavigator from './navigation/ShopNavigator';
 import ReduxThunk from 'redux-thunk';
+import cartReducer from './store/reducers/cart';
+import ordersReducer from './store/reducers/orders';
 const rootReducer = combineReducers({
-  products: productsReducer
+  products: productsReducer,
+  cart:cartReducer,
+  orders:ordersReducer
 });
 const store = createStore(rootReducer,applyMiddleware(ReduxThunk));
 const fetchFonts= ()=>{

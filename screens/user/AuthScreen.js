@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   toastStyle: {
-    fontFamily:'open-sans',
+    //fontFamily:'open-sans',
     backgroundColor: Colors.primary
   }
 });
