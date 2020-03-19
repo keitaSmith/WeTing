@@ -19,8 +19,8 @@ const CartItem = props => {
                 <Text style={styles.amount}>${props.amount.toFixed(2)}</Text>
             </View>
             <View style={styles.itemSummary}>
-               
-                <View style={styles.circle}>
+
+                {props.removable && (<View style={styles.circle}>
                     <TouchableCmp onPress={props.onMinusOne} style={styles.actions}>
                         <View style={styles.circle}>
                             <Ionicons
@@ -30,9 +30,9 @@ const CartItem = props => {
                             />
                         </View>
                     </TouchableCmp>
-                </View>
+                </View>)}
                 <Text style={styles.quantity}>QTY: {props.quantity} </Text>
-                <View style={styles.circle}>
+                {props.addable && (<View style={styles.circle}>
                     <TouchableCmp onPress={props.onOneToCart} style={styles.actions}>
                         <View style={styles.circle}>
                             <Ionicons
@@ -42,8 +42,8 @@ const CartItem = props => {
                             />
                         </View>
                     </TouchableCmp>
-                </View>
-                <View style={styles.circle}>
+                </View>)}
+                {props.deletable && (<View style={styles.circle}>
                     <TouchableCmp onPress={props.onRemove} style={styles.actions}>
                         <View style={styles.circle}>
                             <Ionicons
@@ -53,7 +53,7 @@ const CartItem = props => {
                             />
                         </View>
                     </TouchableCmp>
-                </View>
+                </View>)}
             </View>
         </View>
     </View>);

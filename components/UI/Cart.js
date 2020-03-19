@@ -13,7 +13,7 @@ const Cart = props => {
     }
     return (
         <View style={styles.circle}>
-            <TouchableCmp onPress={props.onAddToCart}>
+            <TouchableCmp onPress={props.onAddToCart} >
             <View style={styles.circle}>
                 <FontAwesomeIcon size={40} icon={faCartPlus} style={styles.customButton} />
                 </View>

@@ -13,8 +13,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
     elevation: 5,
-    //borderColor:Colors.primary,
-    //borderWidth:1,
     borderRadius: 10,
     backgroundColor: 'white',
     overflow:'hidden'

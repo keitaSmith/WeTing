@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   },
   toastStyle: {
     //fontFamily:'open-sans',
-    backgroundColor: Colors.primary
+    backgroundColor: Colors.accent
   }
 });
 

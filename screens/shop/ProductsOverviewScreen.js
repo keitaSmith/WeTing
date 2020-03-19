@@ -7,18 +7,20 @@ import Colors from '../../constants/Colors';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../../components/UI/HeaderButton';
 import * as cartActions from '../../store/actions/cart';
-import cart from '../../store/reducers/cart';
+//import cart from '../../store/reducers/cart';
 const ProductsOverviewScreen = props => {
+    //const productOverview = true;
     const products = useSelector(state => state.products.availableProducts);
     const dispatch = useDispatch();
     return (
-        <LinearGradient colors={[Colors.gradeA, Colors.gradeB]} style={styles.gradient}>
+        <LinearGradient colors={[Colors.gradeA, Colors.gradeB]} style={{flex:1}}>
             <FlatList
                 style={{width:'100%'}}
                 data={products}
                 keyExtractor={item => item.id}
                 renderItem={itemData => (
                     <ProductItem
+                        productOverview
                         image={itemData.item.imageUrl}
                         title={itemData.item.title}
                         price={itemData.item.price}
@@ -60,10 +62,5 @@ ProductsOverviewScreen.navigationOptions = navData => {
             </HeaderButtons>)
     }
 }
-const styles = StyleSheet.create({
-    gradient: {
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
-})
+
 export default ProductsOverviewScreen;

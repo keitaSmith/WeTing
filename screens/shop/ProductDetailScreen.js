@@ -1,12 +1,14 @@
 import React from 'react';
-import { View, Text, Image, Button, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import HeaderButton from '../../components/UI/HeaderButton';
 import Card from '../../components/UI/Card';
 import Cart from '../../components/UI/Cart';
 import { useSelector, useDispatch } from 'react-redux';
 import Colors from '../../constants/Colors';
 import * as cartActions from '../../store/actions/cart'
-//import { withOrientation } from 'react-navigation';
+
 const ProductDetailScreen = props => {
     const productId = props.navigation.getParam('productId');
     const product = useSelector(state => state.products.availableProducts.find(prod => prod.id === productId));
@@ -37,7 +39,16 @@ const ProductDetailScreen = props => {
 };
 ProductDetailScreen.navigationOptions = navData => {
     return {
-        headerTitle: navData.navigation.getParam('productTitle')
+        headerTitle: navData.navigation.getParam('productTitle'),
+        headerRight: () =>
+            (<HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item
+                    title='Cart'
+                    iconName={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
+                    onPress={() => {
+                        navData.navigation.navigate('Cart')
+                    }} />
+            </HeaderButtons>)
     };
 }
 const styles = StyleSheet.create({
