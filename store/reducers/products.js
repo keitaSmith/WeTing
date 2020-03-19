@@ -1,4 +1,7 @@
 import PRODUCTS from '../../data/dummy-data';
+import {StyleSheet} from 'react-native';
+import Toast from 'react-native-tiny-toast';
+import Colors from '../../constants/Colors';
 import {
   DELETE_PRODUCT,
   CREATE_PRODUCT,
@@ -21,13 +24,17 @@ export default (state = initialState, action) => {
       };
     case CREATE_PRODUCT:
       const newProduct = new Product(
-        action.productData.id,
+        new Date().toString(),
         'u1',
         action.productData.title,
         action.productData.imageUrl,
         action.productData.description,
         action.productData.price
       );
+      Toast.show('Product Added', {
+        position: Toast.position.center,
+        containerStyle: styles.toastStyle
+      });
       return {
         ...state,
         availableProducts: state.availableProducts.concat(newProduct),
@@ -52,6 +59,10 @@ export default (state = initialState, action) => {
       );
       const updatedAvailableProducts = [...state.availableProducts];
       updatedAvailableProducts[availableProductIndex] = updatedProduct;
+      Toast.show('Product Updated', {
+        position: Toast.position.center,
+        containerStyle: styles.toastStyle
+      });
       return {
         ...state,
         availableProducts: updatedAvailableProducts,
@@ -70,3 +81,8 @@ export default (state = initialState, action) => {
   }
   return state;
 };
+const styles=StyleSheet.create({
+  toastStyle: {
+    backgroundColor: Colors.accent
+  }
+});

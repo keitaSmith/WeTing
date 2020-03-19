@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { View, ScrollView, Text, StyleSheet, TextInput, Platform } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../../components/UI/HeaderButton';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import * as productsActions from '../../store/actions/products';
 const EditProductScreen = props => {
     const prodId = props.navigation.getParam('productId');
     const editedProduct = useSelector(state => state.products.userProducts.find(prod => prod.id === prodId));
@@ -11,11 +12,22 @@ const EditProductScreen = props => {
     const [imageUrl, setImageUrl] = useState(editedProduct ? editedProduct.imageUrl : '');
     const [price, setPrice] = useState('');
     const [description, setDescription] = useState(editedProduct ? editedProduct.description : '');
+    const dispatch = useDispatch();
+    const submitHandler = useCallback(() => {
+        if (editedProduct) {
+            dispatch(productsActions.updateProduct(prodId, title, description, imageUrl))
+        } else {
+            dispatch(productsActions.createProduct(title, description, imageUrl, +price))
+        }
+        props.navigation.pop();
+    }, [dispatch, prodId, title, description, imageUrl, price]);
+    useEffect(() => {
+        props.navigation.setParams({ submit: submitHandler });
+    }, [submitHandler]);
 
+    // if (prodId) {
 
-    if (prodId) {
-
-    }
+    // }
     return (
         <ScrollView>
             <View style={styles.form}>
@@ -40,16 +52,15 @@ const EditProductScreen = props => {
     );
 };
 EditProductScreen.navigationOptions = navData => {
+    const submitFn = navData.navigation.getParam('submit');
     return {
         headerTitle: navData.navigation.getParam('productId') ? 'Edit Product' : 'Add Product',
         headerRight: () =>
             (<HeaderButtons HeaderButtonComponent={HeaderButton}>
                 <Item
-                    title='Add'
+                    title='Save'
                     iconName={Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'}
-                    onPress={() => {
-
-                    }} />
+                    onPress={submitFn} />
             </HeaderButtons>)
     }
 }
