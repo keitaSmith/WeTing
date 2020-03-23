@@ -14,7 +14,7 @@ const ProductDetailScreen = props => {
     const product = useSelector(state => state.products.availableProducts.find(prod => prod.id === productId));
     const dispatch = useDispatch();
     return (
-        <LinearGradient colors={[Colors.accent, Colors.primary]} style={styles.gradient}>
+        <LinearGradient colors={[Colors.accent, Colors.primary]} style={{flex:1}}>
             <ScrollView style={styles.sView}>
                 <Card style={styles.imageContainer}>
                     <View style={styles.border}>
@@ -52,21 +52,11 @@ ProductDetailScreen.navigationOptions = navData => {
     };
 }
 const styles = StyleSheet.create({
-    gradient: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-
-    },
     image: {
-        //flex:1,
         height: 200,
         width: '100%',
-        //overflow:"hidden"
     },
     border: {
-        //borderWidth:2,
-        //borderColor:Colors.primary,
         borderRadius: 10
     },
     headerContainer: {
@@ -85,8 +75,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: Colors.accent,
         marginHorizontal: 25,
-        //paddingVertical:20
-        //textAlign:'center'
     },
     description: {
         fontSize: 14,

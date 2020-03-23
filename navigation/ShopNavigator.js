@@ -1,6 +1,6 @@
 import React from 'react';
 import {createStackNavigator} from 'react-navigation-stack';
-import {createAppContainer}from 'react-navigation';
+import {createAppContainer} from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import {Platform} from 'react-native';
 import ProductsOverviewScreen from '../screens/shop/ProductsOverviewScreen';
@@ -15,16 +15,16 @@ import Colors from '../constants/Colors';
 import {Ionicons}from'@expo/vector-icons';
 //import { fetchProducts } from '../store/actions/products';
 const defaultNavOptions={
-    headerTitleStyle:{
-        fontFamily:'open-sans-bold'
-    },
-    headerBackTitle:{
-        fontFamily:'open-sans'
-    },
     headerStyle:{
         backgroundColor:Platform.OS==='android' ?Colors.primary:''
     },
-    headerTintColor:Platform.OS==='android'?'white':Colors.primary
+    headerTintColor:Platform.OS==='android'?'white':Colors.primary,
+    headerTitleStyle: {
+        fontFamily: 'open-sans-bold',
+      },
+    headerBackTitleStyle:{
+         fontFamily:'open-sans',
+    },
 }
 const ProductsNavigator = createStackNavigator({
     //Auth:AuthScreen,

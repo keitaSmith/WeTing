@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, useState } from 'react';
+import React, { useReducer, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 
 const INPUT_CHANGE = 'INPUT_CHANGE';
@@ -24,7 +24,7 @@ const inputReducer = (state, action) => {
 
 const Input = props => {
   const [inputState, dispatch] = useReducer(inputReducer, {
-    value: props.initialValue,
+    value: props.initialValue ? props.initialValue : '',
     isValid: props.initiallyValid,
     touched: false
   });
@@ -33,13 +33,11 @@ const Input = props => {
 
   useEffect(() => {
     if (inputState.touched) {
-      
       onInputChange(id, inputState.value, inputState.isValid);
-      //console.log(id);
     }
   }, [inputState, onInputChange, id]);
 
-  const textChangeHandler = (text) => {
+  const textChangeHandler = text => {
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let isValid = true;
     if (props.required && text.trim().length === 0) {
@@ -57,8 +55,6 @@ const Input = props => {
     if (props.minLength != null && text.length < props.minLength) {
       isValid = false;
     }
-   
-    //console.log(props.formState.password);
     dispatch({ type: INPUT_CHANGE, value: text, isValid: isValid });
   };
 
