@@ -1,5 +1,5 @@
-import React, { useState, useEffect,useCallback } from 'react';
-import { FlatList, Text, StyleSheet, Platform, View,Button } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { FlatList, Text, StyleSheet, Platform, View, Button } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSelector, useDispatch } from 'react-redux';
 import ProductItem from '../../components/shop/ProductItem';
@@ -10,38 +10,42 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as cartActions from '../../store/actions/cart';
 import * as productsActions from '../../store/actions/products';
 import { WaveIndicator } from 'react-native-indicators';
-import { addListener } from 'expo/build/Updates/Updates';
+
 
 
 const ProductsOverviewScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
-    const [error,setError]=useState();
+    const[isRefreshing,setIsRefreshing]=useState(false);
+    const [error, setError] = useState();
     const products = useSelector(state => state.products.availableProducts);
     const dispatch = useDispatch();
-    const loadProducts =useCallback( async () => {
-        setError(null);
-        setIsLoading(true);
+    const loadProducts = useCallback(async () => {
+        setError(null); 
+        setIsRefreshing(true)
         try {
             await dispatch(productsActions.fetchProducts());
         } catch (err) {
             setError(err.message)
         }
-        setIsLoading(false);
-    },[dispatch,setIsLoading,setError])
+        setIsRefreshing(false);
+    }, [dispatch, setIsLoading, setError])
 
-    useEffect(()=>{
-        const willFocusSub=props.navigation.addListener('willFocus',loadProducts);
-        return ()=>{
+    useEffect(() => {
+        const willFocusSub = props.navigation.addListener('willFocus', loadProducts);
+        return () => {
             willFocusSub.remove();
         }
-    },[loadProducts]);
+    }, [loadProducts]);
 
-    useEffect(() => {  
-        loadProducts();
-    }, [dispatch,loadProducts]);
+    useEffect(() => {
+        setIsLoading(true);
+        loadProducts().then(()=>{
+            setIsLoading(false);
+        });
+    }, [dispatch, loadProducts]);
 
-    if(error){
-        return(
+    if (error) {
+        return (
             <LinearGradient colors={[Colors.accent, Colors.primary]} style={{ flex: 1 }}>
                 <View style={styles.emptyContainer}>
                     <MaterialCommunityIcons
@@ -50,7 +54,7 @@ const ProductsOverviewScreen = props => {
                         color={Colors.primary}
                     />
                     <Text style={styles.emptyText}>An Error Occured</Text>
-                    <Button title="Try Again" onPress={loadProducts} color={Colors.primary}/>
+                    <Button title="Try Again" onPress={loadProducts} color={Colors.primary} />
                 </View>
             </LinearGradient>
         )
@@ -58,10 +62,7 @@ const ProductsOverviewScreen = props => {
     if (isLoading) {
         return (
             <LinearGradient colors={[Colors.gradeA, Colors.gradeB]} style={{ flex: 1 }}>
-
-
                 <WaveIndicator color={Platform.OS === 'android' ? 'white' : Colors.primary} size={150} waveMode={"outline"} waveFactor={0.4} count={2} />
-
             </LinearGradient>
         );
     } if (!isLoading && products.length === 0) {
@@ -80,6 +81,8 @@ const ProductsOverviewScreen = props => {
     } else return (
         <LinearGradient colors={[Colors.gradeA, Colors.gradeB]} style={{ flex: 1 }}>
             <FlatList
+                refreshing={isRefreshing}
+                onRefresh={loadProducts}
                 style={{ width: '100%' }}
                 data={products}
                 keyExtractor={item => item.id}

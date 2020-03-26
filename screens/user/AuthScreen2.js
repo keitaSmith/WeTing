@@ -1,45 +1,13 @@
 import React, { useState, useReducer, useCallback, useEffect } from 'react';
-import {
-  ScrollView,
-  View,
-  KeyboardAvoidingView,
-  StyleSheet,
-  Button,
-  TextInput,
-  Text,
-  ActivityIndicator
-} from 'react-native';
-import Toast from 'react-native-tiny-toast';
+import { ScrollView, View, KeyboardAvoidingView, StyleSheet, Button, Text, ActivityIndicator, Alert, Keyboard } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useDispatch } from 'react-redux';
-
 import Input from '../../components/UI/Input';
 import Card from '../../components/UI/Card';
-
 import * as authActions from '../../store/actions/auth';
 import Colors from '../../constants/Colors';
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
-const INPUT_CHANGE = 'INPUT_CHANGE';
-const INPUT_BLUR = 'INPUT_BLUR';
-
-const inputReducer = (state, action) => {
-  switch (action.type) {
-    case INPUT_CHANGE:
-      return {
-        ...state,
-        value: action.value,
-        isValid: action.isValid
-      };
-    case INPUT_BLUR:
-      return {
-        ...state,
-        touched: true
-      };
-    default:
-      return state;
-  }
-};
 
 const formReducer = (state, action) => {
   if (action.type === FORM_INPUT_UPDATE) {
@@ -65,78 +33,42 @@ const formReducer = (state, action) => {
 };
 
 const AuthScreen = props => {
-  const [isLoading, setLoading] = useState(false);
+  const [isBlured, setIsBlured] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
   const [isSignup, setIsSignup] = useState(false);
-  const disp = useDispatch();
-  const [inputState, dispatch] = useReducer(inputReducer, {
-    value: props.initialValue,
-    isValid: props.initiallyValid,
-    touched: false
-  });
-  const inputChangeHandler = useCallback(
-    (inputIdentifier, inputValue, inputValidity) => {
-      dispatchFormState({
-        type: FORM_INPUT_UPDATE,
-        value: inputValue,
-        isValid: inputValidity,
-        input: inputIdentifier,
-      });
-    },
-    [dispatchFormState]
-  );
+  const dispatch = useDispatch();
 
-  const id = 'cnfPassword';
-  useEffect(() => {
-    if (inputState.touched) {
-      inputChangeHandler(id, inputState.value, inputState.isValid);
-      //console.log(inputState.input);
-    }
-  }, [inputState, inputChangeHandler, id]);
-
-  const confirmPasswordHandler = (text) => {
-    let isValid = true;
-    if (!(formState.inputValues.password === text)) {
-      isValid = false;
-    }
-    dispatch({ type: INPUT_CHANGE, value: text, isValid: isValid });
-  };
-
-  const lostFocusHandler = () => {
-    dispatch({ type: INPUT_BLUR });
-  };
   const [formState, dispatchFormState] = useReducer(formReducer, {
     inputValues: {
       email: '',
       password: '',
-      cnfPassword: ''
+      confirmPassword: ''
     },
     inputValidities: {
       email: false,
-      password: false,
-      cnfPassword: true
+      password: false
     },
     formIsValid: false
   });
+
   useEffect(() => {
     if (error) {
-      Toast.show(error, {
-        position: Toast.position.center,
-        containerStyle: styles.toastStyle
-      });
+      Alert.alert('An Error Occurred!', error, [{ text: 'Okay' }]);
     }
-  }, [error])
-  const authHandler = async () => {
+  }, [error]);
+
+  const authHandler = useCallback(async () => {
     let action;
+    if (Keyboard) {
+      Keyboard.dismiss();
+    }
+    setIsBlured(true);
     if (!formState.formIsValid) {
       return;
     }
     if (isSignup) {
-      if (!(formState.inputValues.password === formState.inputValues.cnfPassword)) {
-        Toast.show('Passwords do not match', {
-          position: Toast.position.center,
-          containerStyle: styles.toastStyle
-        });
+      if (!(formState.inputValues.confirmPassword === formState.inputValues.password)) {
         return;
       }
       action = authActions.signup(
@@ -150,31 +82,38 @@ const AuthScreen = props => {
       );
     }
     setError(null);
-    setLoading(true);
+    setIsLoading(true);
     try {
-      await disp(action);
-      setLoading(false);
-      if(isSignup){
-        setIsSignup(false)
-      }else{
+      await dispatch(action);
       props.navigation.navigate('ProductsOverview');
-      }
-      setLoading(false);
     } catch (err) {
       setError(err.message);
-      
+      setIsLoading(false);
+      setIsBlured(false);
     }
-  };
 
+  }, [formState, dispatch, isSignup]);
 
+  const inputChangeHandler = useCallback(
+    (inputIdentifier, inputValue, inputValidity) => {
+      dispatchFormState({
+        type: FORM_INPUT_UPDATE,
+        value: inputValue,
+        isValid: inputValidity,
+        input: inputIdentifier
+      });
+    },
+    [dispatchFormState]
+  );
 
   return (
     <KeyboardAvoidingView
+      style={{ flex: 1 }}
       behavior="padding"
       keyboardVerticalOffset={50}
       style={styles.screen}
     >
-      <LinearGradient colors={[Colors.gradeA,Colors.gradeB]} style={styles.gradient}>
+      <LinearGradient colors={[Colors.gradeA, Colors.gradeB]} style={styles.gradient}>
         <Card style={styles.authContainer}>
           <ScrollView>
             <Text style={styles.formLabel}>{isSignup ? 'Sign Up' : 'Login'}</Text>
@@ -189,6 +128,7 @@ const AuthScreen = props => {
               errorText="Please enter a valid email address."
               onInputChange={inputChangeHandler}
               initialValue=""
+              initiallyBlured={isBlured}
             />
             <Input
               id="password"
@@ -202,26 +142,30 @@ const AuthScreen = props => {
               errorText="Please enter a valid password."
               onInputChange={inputChangeHandler}
               initialValue=""
+              initiallyBlured={isBlured}
             />
             {isSignup ? (
-              <View style={styles.formControl}>
-                <Text style={styles.label}>Confirm Password</Text>
-                <TextInput
-                  placeholder="confirm password"
-                  keyboardType="default"
-                  secureTextEntry
-                  style={styles.input}
-                  value={inputState.value}
-                  inputChangeHandler
-                  onChangeText={confirmPasswordHandler}
-                  onBlur={lostFocusHandler}
-                />
-                {!(formState.inputValues.cnfPassword === formState.inputValues.password) && (
-                  <View style={styles.errorContainer}>
-                    <Text style={styles.errorText}>Passwords do not match</Text>
-                  </View>
-                )}
-              </View>) : null}
+              <Input
+                id="confirmPassword"
+                label="Confirm Password"
+                placeholder="confirm password"
+                keyboardType="default"
+                secureTextEntry
+                required
+                minLength={8}
+                autoCapitalize="none"
+                errorText="Passwords do not match."
+                onInputChange={inputChangeHandler}
+                initialValue=""
+                confirmPassword
+                initiallyBlured={isBlured}
+              />
+            ) : null}
+            {!(formState.inputValues.confirmPassword === formState.inputValues.password) && isSignup && (
+              <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>Passwords do not match</Text>
+              </View>
+            )}
             < View style={styles.buttonContainer}>
               {isLoading ? (<ActivityIndicator size='small' color={Colors.primary} />) :
                 <Button
@@ -290,7 +234,7 @@ const styles = StyleSheet.create({
     fontSize: 13
   },
   formLabel: {
-    fontFamily:'open-sans-bold',
+    fontFamily: 'open-sans-bold',
     fontSize: 16,
     color: Colors.primary,
     textAlign: "center"

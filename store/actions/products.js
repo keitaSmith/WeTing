@@ -6,7 +6,8 @@ export const UPDATE_PRODUCT = 'UPDATE_PRODUCT';
 export const SET_PRODUCTS = 'SET_PRODUCTS';
 
 export const fetchProducts = () => {
-  return async dispatch => {
+  return async (dispatch,getState) => {
+    const userId=getState().auth.userId;
     try {
       const response = await fetch('https://weting-c2f6b.firebaseio.com/products.json');
       if (!response.ok) {
@@ -19,7 +20,7 @@ export const fetchProducts = () => {
         loadedProducts.push(
           new Product(
             key,
-            'u1',
+            resData[key].ownerId,
             resData[key].title,
             resData[key].imageUrl,
             resData[key].description,
@@ -27,23 +28,29 @@ export const fetchProducts = () => {
           )
         );
       };
-      dispatch({ type: SET_PRODUCTS, products: loadedProducts });
+      dispatch({ type: SET_PRODUCTS, products: loadedProducts, userProducts: loadedProducts.filter(prod=>prod.ownerId === userId)});
     } catch (err) {
       throw err;
     }
   }
 }
 export const deleteProduct = productId => {
-  return async dispatch =>{
-    await fetch(`https://weting-c2f6b.firebaseio.com/products/${productId}.json`, {
+  return async (dispatch,getState) => {
+    const token=getState().auth.token;
+    const response =await fetch(`https://weting-c2f6b.firebaseio.com/products/${productId}.json?auth=${token}`, {
       method: 'DELETE'
   });
+  if(!response.ok){
+    throw new Error('Something went wrong!');
+  }
   dispatch( { type: DELETE_PRODUCT, pid: productId });
   }
 };
 export const createProduct = (title, description, imageUrl, price) => {
-  return async dispatch => {
-    const response = await fetch('https://weting-c2f6b.firebaseio.com/products.json', {
+  return async (dispatch,getState) => {
+    const token=getState().auth.token;
+    const userId=getState().auth.userId;
+    const response = await fetch(`https://weting-c2f6b.firebaseio.com/products.json?auth=${token}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -52,11 +59,13 @@ export const createProduct = (title, description, imageUrl, price) => {
         title,
         description,
         imageUrl,
-        price
+        price,
+        ownerId:userId
       })
     });
+
     const resData = await response.json();
-    //console.log(resData);
+
     dispatch({
       type: CREATE_PRODUCT,
       productData: {
@@ -65,13 +74,15 @@ export const createProduct = (title, description, imageUrl, price) => {
         description,
         imageUrl,
         price,
+        ownerId: userId
       }
     });
   }
 };
 export const updateProduct = (id, title, description, imageUrl) => {
-  return async dispatch => {
-    await fetch(`https://weting-c2f6b.firebaseio.com/products/${id}.json`, {
+  return async (dispatch,getState) => {
+    const token=getState().auth.token;
+    const response = await fetch(`https://weting-c2f6b.firebaseio.com/products/${id}.json?auth=${token}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
@@ -82,7 +93,9 @@ export const updateProduct = (id, title, description, imageUrl) => {
         imageUrl,
       })
     });
-  
+    if(!response.ok){
+      throw new Error('Something went wrong!');
+    }
     dispatch({
       type: UPDATE_PRODUCT,
       pid: id,

@@ -12,26 +12,29 @@ const UserProductsScreen = props => {
     const dispatch = useDispatch();
     return (
         <LinearGradient colors={[Colors.gradeA, Colors.gradeB]} style={{ flex: 1 }}>
-            <FlatList data={userProducts} renderItem={itemData =>
-                <ProductItem
-                    userProducts
-                    image={itemData.item.imageUrl}
-                    title={itemData.item.title}
-                    price={itemData.item.price}
-                    deleteProduct={() => {
-                        Alert.alert('Delete','Are you sure you want to delete this product?',[
-                        {text:'Cancel',style:'default'},
-                        {text: 'Yes', style:'destructive', onPress:()=>dispatch(productsActions.deleteProduct(itemData.item.id))}
-                        ],{ cancelable: true });               
-                    }}
-                    editProduct={() => {
-                        props.navigation.navigate('EditProduct', {
-                            productId: itemData.item.id,
-                            //productTitle: itemData.item.title
-                        });
-                    }}
-                />
-            } />
+            <FlatList
+                data={userProducts}
+                keyExtractor={item=>item.id}
+                renderItem={itemData =>
+                    <ProductItem
+                        userProducts
+                        image={itemData.item.imageUrl}
+                        title={itemData.item.title}
+                        price={itemData.item.price}
+                        deleteProduct={() => {
+                            Alert.alert('Delete', 'Are you sure you want to delete this product?', [
+                                { text: 'Cancel', style: 'default' },
+                                { text: 'Yes', style: 'destructive', onPress: () => dispatch(productsActions.deleteProduct(itemData.item.id)) }
+                            ], { cancelable: true });
+                        }}
+                        editProduct={() => {
+                            props.navigation.navigate('EditProduct', {
+                                productId: itemData.item.id,
+                                //productTitle: itemData.item.title
+                            });
+                        }}
+                    />
+                } />
         </LinearGradient>
     );
 };

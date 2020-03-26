@@ -3,7 +3,7 @@ import { View, Text, TextInput, StyleSheet } from 'react-native';
 
 const INPUT_CHANGE = 'INPUT_CHANGE';
 const INPUT_BLUR = 'INPUT_BLUR';
-
+const INPUT_UNBLUR = 'INPUT_UNBLUR';
 const inputReducer = (state, action) => {
   switch (action.type) {
     case INPUT_CHANGE:
@@ -17,22 +17,29 @@ const inputReducer = (state, action) => {
         ...state,
         touched: true
       };
+    case INPUT_UNBLUR:
+      return {
+        ...state,
+        focused: true
+      };
     default:
       return state;
   }
 };
 
 const Input = props => {
+  const { onInputChange, id, initiallyBlured } = props;
   const [inputState, dispatch] = useReducer(inputReducer, {
     value: props.initialValue ? props.initialValue : '',
     isValid: props.initiallyValid,
-    touched: false
+    touched: initiallyBlured ? initiallyBlured : false,
+    focused: false,
   });
 
-  const { onInputChange, id } = props;
+
 
   useEffect(() => {
-    if (inputState.touched) {
+    if (inputState.touched || inputState.focused) {
       onInputChange(id, inputState.value, inputState.isValid);
     }
   }, [inputState, onInputChange, id]);
@@ -40,6 +47,9 @@ const Input = props => {
   const textChangeHandler = text => {
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let isValid = true;
+    if (props.price && !(+text >= props.min)) {
+      isValid = false;
+    }
     if (props.required && text.trim().length === 0) {
       isValid = false;
     }
@@ -61,7 +71,14 @@ const Input = props => {
   const lostFocusHandler = () => {
     dispatch({ type: INPUT_BLUR });
   };
-
+  const focusHandler = () => {
+    dispatch({ type: INPUT_UNBLUR });
+  }
+  const err = (
+    <View style={styles.errorContainer}>
+      <Text style={styles.errorText}>{props.errorText}</Text>
+    </View>
+  );
   return (
     <View style={styles.formControl}>
       <Text style={styles.label}>{props.label}</Text>
@@ -71,12 +88,9 @@ const Input = props => {
         value={inputState.value}
         onChangeText={textChangeHandler}
         onBlur={lostFocusHandler}
+        onFocus={focusHandler}
       />
-      {!inputState.isValid && inputState.touched && (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{props.errorText}</Text>
-        </View>
-      )}
+      {(!inputState.isValid && inputState.touched && !props.confirmPassword && err) || (initiallyBlured && !inputState.isValid && !props.confirmPassword && err)}
     </View>
   );
 };

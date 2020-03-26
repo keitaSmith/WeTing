@@ -6,11 +6,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import Card from '../../components/UI/Card';
 import CartItem from '../../components/shop/CartItem'
+import { WaveIndicator } from 'react-native-indicators';
 import OrderItem from '../../components/shop/OrderItem';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ordersActions from '../../store/actions/orders';
 import Colors from '../../constants/Colors';
 const CheckoutScreen = props => {
+    const[isLoading,setIsLoading]=useState(false);
     const [showDetails, setShowDetails] = useState(false);
     const cartTotalCost = useSelector(state => state.cart.totalAmount);
     const cartItems = useSelector(state => {
@@ -79,18 +81,21 @@ const CheckoutScreen = props => {
 
                 <Text>Payment Information Form</Text>
 
-                <CustomButton
+                {isLoading?(<WaveIndicator color={Platform.OS === 'android' ? 'white' : Colors.primary} size={150} waveMode={"outline"} waveFactor={0.4} count={2} />):
+                (<CustomButton
                     style={styles.pay}
-                    action={() => {
+                    action={async() => {
+                        setIsLoading(true);
                         dispatch(ordersActions.addOrder(cartItems, cartTotalCost));
+                        setIsLoading(false);
                         Toast.show('Payment Confirmed', {
                             position: Toast.position.center,
                             containerStyle: styles.toastStyle
                           });
-                        props.navigation.popToTop();
+                        props.navigation.navigate('ProductsOverview');
                     }}>
                     Confirm Payment
-                </CustomButton>
+                </CustomButton>)}
 
             </Card>
         </LinearGradient>
