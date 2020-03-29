@@ -79,7 +79,7 @@ const ProductsOverviewScreen = props => {
             </LinearGradient>
         )
     } else return (
-        <LinearGradient colors={[Colors.gradeA, Colors.gradeB]} style={{ flex: 1 }}>
+        <LinearGradient colors={[Colors.gradeA, Colors.gradeB,Colors.gradeA]} style={{ flex: 1 }}>
             <FlatList
                 refreshing={isRefreshing}
                 onRefresh={loadProducts}

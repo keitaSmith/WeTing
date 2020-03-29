@@ -11,12 +11,14 @@ import CheckoutScreen from '../screens/shop/CheckoutScreen';
 import EditProductScreen from '../screens/user/EditProductScreen';
 import AuthScreen from '../screens/user/AuthScreen2';
 import OrdersScreen from '../screens/shop/OrdersScreen';
+import ProducerScreen from '../screens/shop/ProducerScreen';
 import UserProductsScreen from '../screens/user/UserProductsScreen';
 import StartupScreen from '../screens/StartupScreen';
 import Colors from '../constants/Colors';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, Entypo } from '@expo/vector-icons';
 import CustomBotton from '../components/UI/CustomButton';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
+
 import * as authActions from '../store/actions/auth';
 //import { fetchProducts } from '../store/actions/products';
 const defaultNavOptions = {
@@ -31,6 +33,14 @@ const defaultNavOptions = {
         fontFamily: 'open-sans',
     },
 }
+const ProducersNavigator = createStackNavigator(
+    {
+        Producers: ProducerScreen
+    },
+    {
+        defaultNavigationOptions: defaultNavOptions
+    }
+);
 const AuthNavigator = createStackNavigator(
     {
         Auth: AuthScreen
@@ -93,13 +103,13 @@ const ShopDrawerNavigator = createDrawerNavigator({
     contentComponent: props => {
         const dispatch = useDispatch();
         return (
-            <View style={{ flex: 1,paddingTop:20 }}>
+            <View style={{ flex: 1, paddingTop: 20 }}>
                 <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
                     <DrawerItems {...props} />
-                    <View style={{ width:'100%' }}>
-                        <CustomBotton style={{alignSelf: "center",borderRadius:0,width:'100%'}} action={()=>{
+                    <View style={{ width: '100%' }}>
+                        <CustomBotton style={{ alignSelf: "center", borderRadius: 0, width: '100%' }} action={() => {
                             dispatch(authActions.logout());
-                            props.navigation.navigate('Auth');
+                            //props.navigation.navigate('Auth');
                         }}>Logout</CustomBotton>
                     </View>
                 </SafeAreaView>
@@ -108,10 +118,27 @@ const ShopDrawerNavigator = createDrawerNavigator({
     }
 })
 const ShopTabNavigator = createBottomTabNavigator({
-    Shop: ShopDrawerNavigator
+    Shop: {
+        screen: ShopDrawerNavigator, navigationOptions: {
+            tabBarIcon: (tabInfo) => {
+                return <Entypo name='shop' size={25} color={tabInfo.tintColor} />
+            }
+        }
+    },
+    Producers: {
+        screen: ProducersNavigator, navigationOptions: {
+            tabBarIcon: (tabInfo) => {
+                return <Entypo name='network' size={25} color={tabInfo.tintColor} />
+            }
+        }
+    }
 }, {
     tabBarOptions: {
-        activeTintColor: Colors.accent
+        activeTintColor: 'white',
+        //inactiveTintColor:Colors.accent,
+        style: {
+            backgroundColor: Colors.primary
+        }
     }
 })
 const ShopNavigator = createSwitchNavigator({

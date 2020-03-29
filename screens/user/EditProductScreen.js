@@ -9,6 +9,7 @@ import Input from '../../components/UI/Input';
 import { LinearGradient } from 'expo-linear-gradient';
 import Colors from '../../constants/Colors';
 import Card from '../../components/UI/Card';
+import ImageSelector from '../../components/UI/ImageSelector';
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 
 const formReducer = (state, action) => {
@@ -152,6 +153,7 @@ const EditProductScreen = props => {
             required
             initiallyBlured={isBlured}
           />
+          <ImageSelector/>
           <Input
             id="imageUrl"
             label="Image Url"
