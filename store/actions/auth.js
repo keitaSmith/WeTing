@@ -1,4 +1,4 @@
-import BackgroundTimer from "react-native-background-timer";
+//import BackgroundTimer from "react-native-background-timer";
 import { AsyncStorage } from 'react-native';
 
 export const AUTHENTICATE = 'AUTHENTICATE';
@@ -82,20 +82,19 @@ export const logout = () => {
   clearLogoutTimer();
   AsyncStorage.removeItem('userData');
   return { type: LOGOUT };
-}
+};
+
 const clearLogoutTimer = () => {
-  BackgroundTimer.clearTimeout.bind(BackgroundTimer);
   if (timer) {
     clearTimeout(timer);
   }
 };
+
 const setLogoutTimer = expirationTime => {
-  
-  BackgroundTimer.setTimeout.bind(BackgroundTimer);
   return dispatch => {
     timer = setTimeout(() => {
       dispatch(logout());
-    }, expirationTime-1000);
+    }, expirationTime);
   };
 };
 const saveDataToStorage = (token, userId, expirationDate) => {
