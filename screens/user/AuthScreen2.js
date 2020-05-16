@@ -1,5 +1,5 @@
 import React, { useState, useReducer, useCallback, useEffect } from 'react';
-import { ScrollView, View, KeyboardAvoidingView, StyleSheet, Button, Text, ActivityIndicator, Alert, Keyboard } from 'react-native';
+import { ScrollView,Platform, View, KeyboardAvoidingView, StyleSheet, Button, Text, ActivityIndicator, Alert, Keyboard, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useDispatch } from 'react-redux';
 import Input from '../../components/UI/Input';
@@ -108,12 +108,12 @@ const AuthScreen = props => {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
       behavior="padding"
       keyboardVerticalOffset={50}
       style={styles.screen}
     >
       <LinearGradient colors={[Colors.gradeA, Colors.gradeB]} style={styles.gradient}>
+
         <Card style={styles.authContainer}>
           <ScrollView>
             <Text style={styles.formLabel}>{isSignup ? 'Sign Up' : 'Login'}</Text>
@@ -185,13 +185,19 @@ const AuthScreen = props => {
             </View>
           </ScrollView>
         </Card>
+
       </LinearGradient>
     </KeyboardAvoidingView >
   );
 };
 
 AuthScreen.navigationOptions = {
-  headerTitle: 'WeTing'
+  headerTitle: () =>
+    (<Image
+      source={Platform.OS === 'android' ? require('../../assets/logos/WeTingHeaderTitle.png') : require('../../assets/logos/WeTingHeaderTitleIos.png')}
+      resizeMode='contain'
+      style={Platform.OS==='android'?{ height: 100, width: 100, alignSelf: "center" }:{height:80,width:80, alignSelf:'center'}}
+    />)
 };
 
 const styles = StyleSheet.create({

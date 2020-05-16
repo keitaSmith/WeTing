@@ -1,4 +1,5 @@
 import React from 'react';
+//import {useSelector} from 'react-redux';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer';
@@ -13,14 +14,14 @@ import AuthScreen from '../screens/user/AuthScreen2';
 import OrdersScreen from '../screens/shop/OrdersScreen';
 import ProducerScreen from '../screens/shop/ProducerScreen';
 import UserProductsScreen from '../screens/user/UserProductsScreen';
+import BecomeProducerScreen from '../screens/user/BecomeProducerScreen';
 import StartupScreen from '../screens/StartupScreen';
 import Colors from '../constants/Colors';
 import { Ionicons, Entypo } from '@expo/vector-icons';
 import CustomBotton from '../components/UI/CustomButton';
 import { useDispatch } from 'react-redux';
-
 import * as authActions from '../store/actions/auth';
-//import { fetchProducts } from '../store/actions/products';
+
 const defaultNavOptions = {
     headerStyle: {
         backgroundColor: Platform.OS === 'android' ? Colors.primary : ''
@@ -35,7 +36,12 @@ const defaultNavOptions = {
 }
 const ProducersNavigator = createStackNavigator(
     {
-        Producers: ProducerScreen
+        Producers: ProducerScreen,
+        ProductsOverview: ProductsOverviewScreen,
+        ProductDetail: ProductDetailScreen,
+        Cart: CartScreen,
+        Checkout: CheckoutScreen
+        //Products: ProductsNavigator
     },
     {
         defaultNavigationOptions: defaultNavOptions
@@ -46,6 +52,23 @@ const AuthNavigator = createStackNavigator(
         Auth: AuthScreen
     },
     {
+        defaultNavigationOptions: defaultNavOptions
+    }
+);
+const BecomeProducerNavigator = createStackNavigator(
+    {
+        BecomeProducer: BecomeProducerScreen,
+        EditProduct: EditProductScreen
+    },
+    {
+        navigationOptions: {
+            drawerLabel: "Become a Producer",
+            drawerIcon: drawerConfig => <Ionicons
+                name={Platform.OS === 'android' ? 'md-paper' : 'ios-paper'}
+                size={25}
+                color={drawerConfig.tintColor}
+            />
+        },
         defaultNavigationOptions: defaultNavOptions
     }
 );
@@ -82,6 +105,7 @@ const UserShopNavigator = createStackNavigator({
     EditProduct: EditProductScreen
 }, {
     navigationOptions: {
+        drawerLabel: "Your Shop",
         drawerIcon: drawerConfig => <Ionicons
             name={Platform.OS === 'android' ? 'md-create' : 'ios-create'}
             size={25}
@@ -95,7 +119,9 @@ const ShopDrawerNavigator = createDrawerNavigator({
     //Auth:AuthNavigator,
     Products: ProductsNavigator,
     Orders: OrdersNavigator,
-    Your_Shop: UserShopNavigator
+    //Producers:ProducersNavigator,
+    Your_Shop: UserShopNavigator,
+    BecomeProducer: BecomeProducerNavigator
 }, {
     contentOptions: {
         activeTintColor: Colors.primary
@@ -134,10 +160,10 @@ const ShopTabNavigator = createBottomTabNavigator({
     }
 }, {
     tabBarOptions: {
-        activeTintColor: 'white',
+        activeTintColor:Platform.OS === 'android' ? 'white':Colors.primary,
         //inactiveTintColor:Colors.accent,
         style: {
-            backgroundColor: Colors.primary
+            backgroundColor: Platform.OS === 'android' ? Colors.primary : 'white'
         }
     }
 })

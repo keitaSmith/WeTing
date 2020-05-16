@@ -5,6 +5,7 @@ import {AppLoading} from 'expo';
 import * as Font from 'expo-font';
 import productsReducer from './store/reducers/products';
 import NavigationContainer from './navigation/NavigationContainer';
+import producersRecuder from './store/reducers/producers';
 //import ShopNavigator from './navigation/ShopNavigator';
 import ReduxThunk from 'redux-thunk';
 import cartReducer from './store/reducers/cart';
@@ -14,7 +15,8 @@ const rootReducer = combineReducers({
   products: productsReducer,
   cart:cartReducer,
   orders:ordersReducer,
-  auth:authReducer
+  auth:authReducer,
+  producers:producersRecuder
 });
 const store = createStore(rootReducer,applyMiddleware(ReduxThunk));
 const fetchFonts= ()=>{

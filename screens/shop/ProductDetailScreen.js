@@ -14,11 +14,11 @@ const ProductDetailScreen = props => {
     const product = useSelector(state => state.products.availableProducts.find(prod => prod.id === productId));
     const dispatch = useDispatch();
     return (
-        <LinearGradient colors={[Colors.accent, Colors.primary]} style={{flex:1}}>
+        <LinearGradient colors={[Colors.accent, Colors.primary]} style={{ flex: 1 }}>
             <ScrollView style={styles.sView}>
                 <Card style={styles.imageContainer}>
                     <View style={styles.border}>
-                        <Image style={styles.image} source={{ uri: product.imageUrl }} />
+                        <Image style={styles.image} source={{ uri: `data:image/jpg;base64,${product.imageUrl}` }} />
                     </View>
                 </Card>
                 <Card style={styles.detailContainer} >

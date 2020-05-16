@@ -5,7 +5,6 @@ import Card from '../UI/Card';
 import Cart from '../UI/Cart';
 import Colors from '../../constants/Colors';
 import CustomButton from '../../components/UI/CustomButton';
-import { faPray } from '@fortawesome/free-solid-svg-icons';
 const ProductItem = props => {
   let TouchableCmp = TouchableOpacity;
   if (Platform.OS === 'android' && Platform.Version >= 21) {
@@ -22,7 +21,7 @@ const ProductItem = props => {
       <View style={styles.product}>
         <Card>
           <View style={styles.imageContainer}>
-            <Image style={styles.image} source={{ uri: props.image }} />
+            <Image style={styles.image} source={{ uri: `data:image/jpg;base64,${props.image}` }} />
           </View>
           <View style={styles.details}>
             <Text style={styles.title}>{props.title}</Text>
