@@ -2,9 +2,8 @@
   "expo": {
     "name": "WeTing",
     "slug": "WeTing",
-    "privacy": "public",
+    "privacy": "unlisted",
     "sdkVersion": "36.0.0",
-    
     "platforms": [
       "ios",
       "android",
@@ -32,6 +31,8 @@
     "android": {
       "package": "com.WeTing.WeTing",
       "versionCode": 1
-    }
+    },
+    "description": "",
+    "githubUrl": "https://github.com/keitaSmith/WeTing"
   }
 }
