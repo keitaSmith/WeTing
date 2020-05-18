@@ -2,7 +2,10 @@
 A shopping app for small local businesses in Trinidad and Tobago
 ## How to Run the App
 ### Step 1
-Install the expo app from the Google Play store or the Apple App store  
+Install the expo app from the Google Play store or the Apple App store 
+Sign into the professionals' expo account  
+Username: keitatrinity@gmail.com  
+Password: sillyGoose123!  
 ![](https://i.imgur.com/51VnF13.png)
 ### Step 2
 Go to [https://expo.io/@khal_keita/WeTing](https://expo.io/@khal_keita/WeTing)
